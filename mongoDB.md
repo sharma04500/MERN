@@ -4,11 +4,11 @@
 
 MongoDB is a NOSQL database which had the capability of storing massive chunks of data in unstructured format.
 
-> Installation of Mongo DB :
+## Installation of Mongo DB :
 
 To install Mongo DB on Ubuntu: https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/
 
-* Installation of community edition of Mongo DB 7.0 had some issues to start normally, when installed in ubuntu 22.04 without dist-upgrading the base OS.*
+*Installation of community edition of Mongo DB 7.0 had some issues to start normally, when installed in ubuntu 22.04 without dist-upgrading the base OS.*
 
 ### To install the original community edition of mongo DB from the official doccumentation.
 
@@ -52,16 +52,16 @@ apt-mark hold mongodb-org-tools
 
 ```
 
-The installation package itself creates a "mongod" service for the mongo DB.
+The installation package itself creates an init service "mongod" for the mongo DB for systemctl.
 
-If mongo DB is running on the localhost we can directly connect to the database by running `mongosh` in the command line.
+If mongo DB is running on the localhost we can directly connect to the database by running `mongosh` in the command line. mongosh refers to 'mongo shell'.
 
 In order to connect to the mongo DB from a remote host, the options to be used with the mongosh are:
 
  `--port 27017` `--dbpath /var/lib/mongod` 
 
  ```
- mongod --auth --port 27017 --dbpath /var/lib/mongo
+ mongosh --auth --port 27017 --dbpath /var/lib/mongo --host
 
  ```
 
@@ -75,7 +75,7 @@ In order to connect to the mongo DB from a remote host, the options to be used w
 
   In Mongo DB, the DB with the title admin holds all the administration and sensitive authorization and authentication info such as databases, permissions, users, their privileges and roles...
 
- So, create a user in that database. To switch to the "admin" DB execute `use admin;` and create a user by executing the following query:
+ So, create a user in that database for creating a system admin role for maintaining the mongoDB. Admin user is like a sudo user in ubuntu and he will be able to access any section of the DB. To switch to the "admin" DB execute `use admin;` and create a user by executing the following query:
 
  ```
  db.createUser(
@@ -97,11 +97,11 @@ In order to connect to the mongo DB from a remote host, the options to be used w
  Now, edit the /etc/mongod.conf file and make an entry by uncommenting the `security` section in the file viz., `authorization:enabled` by giving two spaces under `security:`
 
  Now, restart the mongo by logging in via :
- `mongo --port 27017 --authenticationDatabase "admin" -u "adminUser" -p`
+ `mongosh --port 27017 --authenticationDatabase "admin" -u "adminUser" -p`
 
  This, prompts for the password to login to the mongo shell (mongosh).
 
- We shouldn't use these credentials every where as it has admin privileges. We have to create an application user for getting our job done by executing the query as follows: 
+ We shouldn't use these credentials every where as it has admin privileges and have viable potential to lead us towards any unprecedented incidents. So, We have to create an application user for our application with read Write access to the application DB alone. Any no. of users can be created by executing the query as follows: 
 
  ```
  
@@ -125,4 +125,19 @@ In order to connect to the mongo DB from a remote host, the options to be used w
 
 URI for mongoDB, when running on a local machine : mongodb://goaluser:12345@localhost:27017/goalsetter
 
-the above URI is from the format : mongodb://username:password@localhost:27017/mydatabase
+the above URI is from the format : mongodb://username:password@localhost:27017/db_name
+
+To search for the data in a collection in the db, login to the db and run the query as follows:
+`db.<collection>.find()`
+
+This command prints all the data written to that particular collection of the DB.
+
+For example, to fetch the contents of the collection 'goals' in the db 'goalsetter',
+
+First login to the mongo application in the db server using proper auth info viz.,
+```
+mongosh --authenticationDatabase "<db_name>" -u "<username>" -p
+```
+In the above command, the option "authenticationDatabase" refers to the DB to which you are trying to connect and the username is your name.
+
+Now, it will take you to mongo shell, even if you have no privileges. But, user will be able to execute queries only if he is authorized to perform the intended action of the query.
