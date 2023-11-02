@@ -86,6 +86,10 @@ In order to connect to the mongo DB from a remote host, the options to be used w
   } 
  )
  ```
+or to execute the above stated action as a single line command in the mongosh shell,
+```
+db.createUser( { user:"adminUser", pwd:passwordPrompt(), roles:[{role:"userAdminAnyDatabase",db:"admin"},"readWriteAnyDatabase"] } )
+```
  In the above stated query,
         `adminUser` - The custom username for the administrator
         `passwordPrompt()` - Prompts for password instead of directly pasting it in the bare human readble text format.
