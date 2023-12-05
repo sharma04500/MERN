@@ -17,7 +17,7 @@ adminDb.createUser({
 
 // Define the new database name and user credentials.
 const newDatabaseName = "goalsetter";
-const newUsername = "appUser";
+const newUsername = "goaluser";
 const newPassword = "12345";
 
 // Create the new database.
@@ -30,7 +30,7 @@ db.getCollection("myCollection").insertOne({ name:"goals" });
 
 // Create a new user with specific roles and privileges in the new database.
 newDb.createUser({
-  user: "appUser",
+  user: "goaluser",
   pwd: "12345",
   roles: [
     { role:"readWrite", db:"goalsetter" },
